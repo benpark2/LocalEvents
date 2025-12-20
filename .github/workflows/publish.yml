@@ -51,17 +51,23 @@ jobs:
         run: |
           set -euxo pipefail
           mkdir -p build site
-          jupyter nbconvert             --to notebook             --execute notebooks/SOC_Weekly_Event_Finder.ipynb             --ExecutePreprocessor.timeout=1200             --output build/executed.ipynb
+
+          jupyter nbconvert \
+            --to notebook \
+            --execute notebooks/SOC_Weekly_Event_Finder.ipynb \
+            --ExecutePreprocessor.timeout=1200 \
+            --output executed.ipynb \
+            --output-dir build
+
+          echo "Contents of build/:"
+          ls -lah build || true
 
           echo "Contents of site/:"
           ls -lah site || true
 
           if [[ ! -f site/index.html ]]; then
-            echo "::error::site/index.html was not created"
-            echo "Top-level files:"
-            ls -lah
-            echo "Files under repo (max depth 3):"
-            find . -maxdepth 3 -type f -print
+            echo "::error::site/index.html was not created. Ensure the notebook always writes site/index.html even when no events are found."
+            find . -maxdepth 4 -type f -print
             exit 1
           fi
 
