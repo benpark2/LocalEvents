@@ -1,9 +1,10 @@
-name: Execute notebook (build site/index.html)
+- name: Execute notebook (build site/index.html)
   env:
     TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
   run: |
     jupyter nbconvert --to notebook --execute notebooks/SOC_Weekly_Event_Finder.ipynb \
       --ExecutePreprocessor.timeout=1200 --output build/executed.ipynb
+
 
 name: Publish weekly event report
 
