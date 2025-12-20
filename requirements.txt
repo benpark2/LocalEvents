@@ -1,0 +1,14 @@
+requests>=2.31
+beautifulsoup4>=4.12
+pandas>=2.0
+python-dateutil>=2.9
+geopy>=2.4
+tqdm>=4.66
+tenacity>=8.2
+diskcache>=5.6
+lxml>=5.2
+
+# Notebook execution (headless)
+nbconvert>=7.16
+nbclient>=0.10
+ipykernel>=6.29
