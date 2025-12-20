@@ -38,6 +38,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Execute notebook (build site/index.html)
+        shell: bash
         env:
           TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
@@ -48,13 +49,21 @@ jobs:
           RADIUS_MILES: "45"
           TOP_N: "10"
         run: |
+          set -euxo pipefail
           mkdir -p build site
-          jupyter nbconvert \
-            --to notebook \
-            --execute notebooks/SOC_Weekly_Event_Finder.ipynb \
-            --ExecutePreprocessor.timeout=1200 \
-            --output build/executed.ipynb
-          test -f site/index.html
+          jupyter nbconvert             --to notebook             --execute notebooks/SOC_Weekly_Event_Finder.ipynb             --ExecutePreprocessor.timeout=1200             --output build/executed.ipynb
+
+          echo "Contents of site/:"
+          ls -lah site || true
+
+          if [[ ! -f site/index.html ]]; then
+            echo "::error::site/index.html was not created"
+            echo "Top-level files:"
+            ls -lah
+            echo "Files under repo (max depth 3):"
+            find . -maxdepth 3 -type f -print
+            exit 1
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
