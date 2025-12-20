@@ -1,25 +1,19 @@
-- name: Execute notebook (build site/index.html)
-  env:
-    TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
-  run: |
-    jupyter nbconvert --to notebook --execute notebooks/SOC_Weekly_Event_Finder.ipynb \
-      --ExecutePreprocessor.timeout=1200 --output build/executed.ipynb
-      
-- name: Publish weekly event report
+name: Publish weekly event report
 
 on:
   workflow_dispatch:
   schedule:
-    # Runs Tuesdays at 18:00 UTC (10:00am PT in winter, 11:00am PT in summer)
+    # Tuesdays at 18:00 UTC (10am PT winter / 11am PT summer)
     - cron: "0 18 * * 2"
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read  # required by actions/deploy-pages@v4 :contentReference[oaicite:1]{index=1}
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -27,16 +21,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v5 :contentReference[oaicite:2]{index=2}
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v5 :contentReference[oaicite:3]{index=3}
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: "pip"
+          cache: pip
 
       - name: Install dependencies
         run: |
@@ -45,23 +39,25 @@ jobs:
 
       - name: Execute notebook (build site/index.html)
         env:
-          # Add these in your repo Settings → Secrets and variables → Actions
           TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
           GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
-          # Optional overrides (repo variables or hardcode here)
-          TZ: "America/Los_Angeles"
-          HOME_LABEL: "Laguna Niguel, CA"
+          TZ: America/Los_Angeles
+          HOME_LABEL: Laguna Niguel, CA
           HOME_LAT: "33.5225"
           HOME_LON: "-117.7076"
           RADIUS_MILES: "45"
           TOP_N: "10"
         run: |
           mkdir -p build site
-          jupyter nbconvert             --to notebook             --execute notebooks/SOC_Weekly_Event_Finder.ipynb             --ExecutePreprocessor.timeout=1200             --output build/executed.ipynb
+          jupyter nbconvert \
+            --to notebook \
+            --execute notebooks/SOC_Weekly_Event_Finder.ipynb \
+            --ExecutePreprocessor.timeout=1200 \
+            --output build/executed.ipynb
           test -f site/index.html
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v4 :contentReference[oaicite:4]{index=4}
         with:
           path: site
 
@@ -74,4 +70,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4 :contentReference[oaicite:5]{index=5}
