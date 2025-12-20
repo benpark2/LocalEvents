@@ -10,7 +10,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
-  actions: read  # required by actions/deploy-pages@v4 :contentReference[oaicite:1]{index=1}
+  actions: read
 
 concurrency:
   group: pages
@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5 :contentReference[oaicite:2]{index=2}
+        uses: actions/checkout@v4
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5 :contentReference[oaicite:3]{index=3}
+        uses: actions/configure-pages@v5
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -57,7 +57,7 @@ jobs:
           test -f site/index.html
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4 :contentReference[oaicite:4]{index=4}
+        uses: actions/upload-pages-artifact@v4
         with:
           path: site
 
@@ -70,4 +70,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 :contentReference[oaicite:5]{index=5}
+        uses: actions/deploy-pages@v4
