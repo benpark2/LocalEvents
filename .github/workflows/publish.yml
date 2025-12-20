@@ -5,7 +5,6 @@
     jupyter nbconvert --to notebook --execute notebooks/SOC_Weekly_Event_Finder.ipynb \
       --ExecutePreprocessor.timeout=1200 --output build/executed.ipynb
 
-
 name: Publish weekly event report
 
 on:
